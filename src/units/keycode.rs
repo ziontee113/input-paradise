@@ -1,14 +1,12 @@
-use evdev::Key;
+use evdev::{EnumParseError, Key};
 use std::str::FromStr;
 
-pub fn code_from_key(key: &str) -> Option<u16> {
+pub fn key_code_from_str(key: &str) -> Result<u16, EnumParseError> {
     let mut final_key = key.to_uppercase();
+
     if !final_key.contains("BTN_") {
         final_key = format!("KEY_{}", final_key);
     }
 
-    if let Ok(result) = Key::from_str(&final_key) {
-        return Some(result.code());
-    }
-    None
+    Ok(Key::from_str(&final_key)?.code())
 }
