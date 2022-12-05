@@ -30,10 +30,6 @@ impl KeyIdentifier {
     pub fn code(&self) -> u16 {
         self.code
     }
-
-    pub fn is(&self, device_alias: &str, key_name: &str) -> bool {
-        self.device_alias == device_alias.to_uppercase() && self.key_name == key_name.to_uppercase()
-    }
 }
 
 impl std::fmt::Display for KeyIdentifier {
@@ -51,14 +47,5 @@ mod test {
 
         let key = ki!(r1 j);
         assert_eq!(key.to_string(), "R1 J");
-    }
-
-    #[test]
-    fn can_check_if_key_identifier_x_values() {
-        let key = ki!(L1 D);
-        assert!(key.is("L1", "D"));
-
-        let key = ki!(R1 J);
-        assert!(key.is("r1", "j"));
     }
 }
