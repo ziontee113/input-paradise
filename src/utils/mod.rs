@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub mod test_utils;
+pub mod for_testing;
 
 // for development purposes only
 pub fn mock_device_alias() -> HashMap<&'static str, &'static str> {
