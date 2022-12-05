@@ -1,4 +1,4 @@
-use super::keycode::key_code_from_str;
+use crate::utils;
 
 #[macro_export]
 macro_rules! ki {
@@ -24,7 +24,7 @@ impl KeyIdentifier {
     pub fn from_str(device_alias: &str, key_name: &str) -> Self {
         Self {
             device_alias: device_alias.to_uppercase(),
-            code: key_code_from_str(key_name).unwrap(),
+            code: utils::test_utils::key_code_from_str(key_name).unwrap(),
         }
     }
 
@@ -41,6 +41,7 @@ impl KeyIdentifier {
 mod test {
     use crate::units::key_identifier::KeyIdentifier;
 
+    #[test]
     fn can_construct_key_identifier_from_device_alias_and_code() {
         let key = KeyIdentifier::new("L1", 32);
         assert_eq!(key.device_alias(), "L1");
