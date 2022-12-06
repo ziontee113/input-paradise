@@ -8,14 +8,14 @@ pub fn timer_experience() {
 
     task::spawn_blocking(move || {
         for i in 0..10 {
-            thread::sleep(Duration::from_millis(50));
+            thread::sleep(Duration::from_millis(500));
             tx.send(format!("first loop - {i}")).unwrap();
         }
     });
 
     task::spawn_blocking(move || {
         for i in 0..10 {
-            thread::sleep(Duration::from_millis(50));
+            thread::sleep(Duration::from_millis(1000));
             tx2.send(format!("second loop - {i}")).unwrap();
         }
     });

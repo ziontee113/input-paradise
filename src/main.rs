@@ -10,7 +10,7 @@ mod utils;
 
 #[tokio::main()]
 async fn main() {
-    // interceptor::start();
+    interceptor::start();
 
-    timer_experience::timer_experience();
+    // timer_experience::timer_experience();
 }

@@ -31,22 +31,25 @@ pub fn start() {
 
     // ----------------------------------------------------------------
 
-    let mut virtual_device = devices::output::new().unwrap();
+    // let mut virtual_device = devices::output::new().unwrap();
     let mut state = State::new();
 
     for signal in rx {
         match signal {
             TransmitSignal::Key(device_alias, code, value, timestamp) => {
                 let fragment = IncomingFragment::new(&device_alias, code, value, timestamp);
+
+                utils::dev_print::sequence_up_time_print(&state, value);
+
                 state.receive(&fragment);
 
-                if value == 0 {
-                    let event_down = event_from_code(code, 1);
-                    let event_up = event_from_code(code, 0);
-                    virtual_device.emit(&[event_down, event_up]).unwrap();
-                }
+                // if value == 0 {
+                //     let event_down = event_from_code(code, 1);
+                //     let event_up = event_from_code(code, 0);
+                //     virtual_device.emit(&[event_down, event_up]).unwrap();
+                // }
 
-                // utils::dev_print::sequence_print(&state, code, value);
+                utils::dev_print::sequence_print(&state, code, value);
                 utils::dev_print::dev_clear(&fragment);
             }
         }

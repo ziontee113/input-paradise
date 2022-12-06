@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use chrono::{DateTime, Local};
 
 use crate::{
@@ -44,8 +46,8 @@ pub fn sequence_print(state: &State, code: u16, value: i32) {
         .collect::<Vec<String>>();
     print!("{:?}", result);
 
-    if state.sequence().len() > 1 {
-        let first_time = state.sequence().get(0).unwrap().timestamp();
+    if state.sequence().len() > 1 && value == 1 {
+        let first_time = state.sequence().first().unwrap().timestamp();
         let current_time = state.sequence().last().unwrap().timestamp();
         print!(
             " {}",
@@ -58,4 +60,15 @@ pub fn sequence_print(state: &State, code: u16, value: i32) {
     }
 
     println!();
+}
+
+pub fn sequence_up_time_print(state: &State, value: i32) {
+    if !state.sequence().is_empty() && value == 0 {
+        let first_time = state.sequence().first().unwrap().timestamp();
+        let current_time = SystemTime::now();
+        print!(
+            "__ {}",
+            current_time.duration_since(first_time).unwrap().as_millis()
+        );
+    }
 }
