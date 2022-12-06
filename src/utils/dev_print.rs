@@ -5,7 +5,7 @@ use crate::{
         incoming_fragment::{IncomingFragment, KeyState},
         state::State,
     },
-    utils::code_to_key_name::{self, code_to_key_name},
+    utils::code_to_key_name::code_to_key_name,
 };
 
 pub fn dev_print(fragment: &IncomingFragment) {

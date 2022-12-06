@@ -4,9 +4,13 @@
 mod devices;
 mod interceptor;
 mod rule_library;
+mod timer_experience;
 mod units;
 mod utils;
 
-fn main() {
-    interceptor::start();
+#[tokio::main()]
+async fn main() {
+    // interceptor::start();
+
+    timer_experience::timer_experience();
 }
