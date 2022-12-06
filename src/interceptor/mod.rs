@@ -1,33 +1,22 @@
-mod state;
 mod incoming_fragment;
+mod state;
 
 use std::{
-    sync::{
-        mpsc::{self, Receiver, Sender},
-        Arc, Mutex,
-    },
+    sync::mpsc::{self, Sender},
     thread,
-    time::{Duration, SystemTime},
+    time::SystemTime,
 };
 
 use crate::{
-    devices::{self, input::EventKindCheck, output::event_from_code},
+    devices::{self, input::EventKindCheck},
     utils,
 };
 
+use self::{incoming_fragment::IncomingFragment, state::State};
+
 enum TransmitSignal {
     Key(String, u16, i32, SystemTime),
-    Dispatch(u16, i32),
-
-    Nayeon(String),
 }
-
-struct DispatchState {
-    pending: bool,
-    code: u16,
-    value: i32,
-}
-type ArcDisplatchState = Arc<Mutex<DispatchState>>;
 
 pub fn start() {
     let alias_map = utils::mock_device_alias();
@@ -42,82 +31,21 @@ pub fn start() {
 
     // ----------------------------------------------------------------
 
-    let (nayeon_tx, nayeon_rx): (Sender<String>, Receiver<String>) = mpsc::channel();
-    thread::spawn(move || {
-        for signal in nayeon_rx {
-            println!("{signal}");
-        }
-    });
-
-    // ----------------------------------------------------------------
-
-    let (main_to_dispatch_tx, main_to_dispatch_rx): (
-        Sender<ArcDisplatchState>,
-        Receiver<ArcDisplatchState>,
-    ) = mpsc::channel();
-
-    thread::spawn(move || {
-        let interval_limit = 20;
-
-        for dispatch_state in main_to_dispatch_rx {
-            let mut dispatch_state = dispatch_state.lock().unwrap();
-
-            if !dispatch_state.pending {
-                dispatch_state.pending = true;
-                thread::sleep(Duration::from_millis(interval_limit));
-
-                tx.send(TransmitSignal::Dispatch(
-                    dispatch_state.code,
-                    dispatch_state.value,
-                ))
-                .unwrap();
-            }
-        }
-    });
-
-    // ----------------------------------------------------------------
-
-    let mut virtual_device = devices::output::new().unwrap();
-    let arc_dispatch_state = Arc::new(Mutex::new(DispatchState {
-        pending: false,
-        code: 0,
-        value: 0,
-    }));
+    // let mut virtual_device = devices::output::new().unwrap();
+    let mut state = State::new();
 
     for signal in rx {
         match signal {
-            TransmitSignal::Nayeon(nayeon_signal) => {
-                println!("Nayeon is {nayeon_signal}");
-            }
-            TransmitSignal::Dispatch(code, value) => {
-                let mut dispatch_state = arc_dispatch_state.lock().unwrap();
-                dispatch_state.pending = false;
+            TransmitSignal::Key(device_alias, code, value, timestamp) => {
+                let fragment = IncomingFragment::new(&device_alias, code, value, timestamp);
+                state.receive(&fragment);
 
-                // println!("{code}, {value}");
-
-                let event = event_from_code(code, value);
-                virtual_device.emit(&[event]).unwrap();
-            }
-            TransmitSignal::Key(_device_alias, code, value, _timestamp) => {
-                if value == 0 {
-                    // println!("{device_alias}, {code}, {value}");
-
-                    let event = event_from_code(code, value);
-                    virtual_device.emit(&[event]).unwrap();
-                } else {
-                    let mut dispatch_state = arc_dispatch_state.lock().unwrap();
-
-                    if dispatch_state.pending {
-                        nayeon_tx.send("Im Nayeon!!!".to_string()).unwrap();
-                    } else {
-                        dispatch_state.code = code;
-                        dispatch_state.value = value;
-
-                        main_to_dispatch_tx
-                            .send(Arc::clone(&arc_dispatch_state))
-                            .unwrap();
-                    }
-                }
+                let result = state
+                    .sequence()
+                    .iter()
+                    .map(std::string::ToString::to_string)
+                    .collect::<Vec<String>>();
+                println!("{:?}", result);
             }
         }
     }
