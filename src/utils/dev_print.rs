@@ -1,6 +1,9 @@
 use chrono::{DateTime, Local};
 
-use crate::interceptor::incoming_fragment::{IncomingFragment, KeyState};
+use crate::interceptor::{
+    incoming_fragment::{IncomingFragment, KeyState},
+    state::State,
+};
 
 pub fn dev_print(fragment: &IncomingFragment) {
     let datetime: DateTime<Local> = fragment.timestamp().into();
@@ -28,4 +31,24 @@ pub fn dev_clear(fragment: &IncomingFragment) {
         fragment.key().code() != 15,
         "program terminated by pressing <BS>"
     );
+}
+
+pub fn sequence_print(state: &State) {
+    let result = state
+        .sequence()
+        .iter()
+        .map(std::string::ToString::to_string)
+        .collect::<Vec<String>>();
+    print!("{:?}", result);
+
+    if state.sequence().len() > 1 {
+        let first_time = state.sequence().get(0).unwrap().timestamp();
+        let current_time = state.sequence().last().unwrap().timestamp();
+        print!(
+            " {}",
+            current_time.duration_since(first_time).unwrap().as_millis()
+        );
+    }
+
+    println!();
 }

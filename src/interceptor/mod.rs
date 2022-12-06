@@ -1,5 +1,5 @@
 pub mod incoming_fragment;
-mod state;
+pub mod state;
 
 use std::{
     sync::mpsc::{self, Sender},
@@ -9,7 +9,10 @@ use std::{
 
 use crate::{
     devices::{self, input::EventKindCheck},
-    utils::{self, dev_print::dev_clear},
+    utils::{
+        self,
+        dev_print::{dev_clear, sequence_print},
+    },
 };
 
 use self::{incoming_fragment::IncomingFragment, state::State};
@@ -40,12 +43,7 @@ pub fn start() {
                 let fragment = IncomingFragment::new(&device_alias, code, value, timestamp);
                 state.receive(&fragment);
 
-                let result = state
-                    .sequence()
-                    .iter()
-                    .map(std::string::ToString::to_string)
-                    .collect::<Vec<String>>();
-                println!("{:?}", result);
+                sequence_print(&state);
 
                 dev_clear(&fragment);
             }
