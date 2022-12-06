@@ -1,4 +1,4 @@
-mod incoming_fragment;
+pub mod incoming_fragment;
 mod state;
 
 use std::{
@@ -9,7 +9,7 @@ use std::{
 
 use crate::{
     devices::{self, input::EventKindCheck},
-    utils,
+    utils::{self, dev_print_utils::dev_clear},
 };
 
 use self::{incoming_fragment::IncomingFragment, state::State};
@@ -46,6 +46,8 @@ pub fn start() {
                     .map(std::string::ToString::to_string)
                     .collect::<Vec<String>>();
                 println!("{:?}", result);
+
+                dev_clear(&fragment);
             }
         }
     }
