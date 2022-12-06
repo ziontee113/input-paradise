@@ -139,13 +139,13 @@ fn can_display_state_as_string() {
     let mut state = State::new();
 
     receive_new_fragment(&mut state, "L1", 32, 1, mipoch(0));
-    assert_eq!(state.to_string(), "L1|D");
+    assert_eq!(state.to_string(), "L1 D");
 
     receive_new_fragment(&mut state, "L1", 33, 1, mipoch(19));
-    assert_eq!(state.to_string(), "L1|D, L1|F");
+    assert_eq!(state.to_string(), "L1 D, L1 F");
 
     state.remove_fragment(&IncomingFragment::new("L1", 32, 0, mipoch(40)));
-    assert_eq!(state.to_string(), "L1|F");
+    assert_eq!(state.to_string(), "L1 F");
 
     state.remove_fragment(&IncomingFragment::new("L1", 33, 0, mipoch(53)));
     assert_eq!(state.to_string(), "");

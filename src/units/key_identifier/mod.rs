@@ -42,6 +42,6 @@ impl KeyIdentifier {
 
 impl std::fmt::Display for KeyIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}|{}", self.device_alias, code_to_key_name(self.code))
+        write!(f, "{} {}", self.device_alias, code_to_key_name(self.code))
     }
 }

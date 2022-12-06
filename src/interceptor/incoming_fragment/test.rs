@@ -15,10 +15,10 @@ fn can_make_new_fragment() {
 #[test]
 fn can_turn_fragment_to_string() {
     let fragment = IncomingFragment::new("L1", 32, 1, mipoch(0));
-    assert_eq!(fragment.to_string(), "L1|D");
+    assert_eq!(fragment.to_string(), "L1 D");
 
     let fragment = IncomingFragment::new("R2", 44, 0, mipoch(12));
-    assert_eq!(fragment.to_string(), "R2|Z");
+    assert_eq!(fragment.to_string(), "R2 Z");
 }
 
 #[test]
