@@ -9,10 +9,7 @@ use std::{
 
 use crate::{
     devices::{self, input::EventKindCheck},
-    utils::{
-        self,
-        dev_print::{dev_clear, sequence_print},
-    },
+    utils,
 };
 
 use self::{incoming_fragment::IncomingFragment, state::State};
@@ -43,9 +40,8 @@ pub fn start() {
                 let fragment = IncomingFragment::new(&device_alias, code, value, timestamp);
                 state.receive(&fragment);
 
-                sequence_print(&state);
-
-                dev_clear(&fragment);
+                utils::dev_print::sequence_print(&state);
+                utils::dev_print::dev_clear(&fragment);
             }
         }
     }
