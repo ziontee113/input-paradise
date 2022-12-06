@@ -1,8 +1,11 @@
 use chrono::{DateTime, Local};
 
-use crate::interceptor::{
-    incoming_fragment::{IncomingFragment, KeyState},
-    state::State,
+use crate::{
+    interceptor::{
+        incoming_fragment::{IncomingFragment, KeyState},
+        state::State,
+    },
+    utils::code_to_key_name::{self, code_to_key_name},
 };
 
 pub fn dev_print(fragment: &IncomingFragment) {
@@ -33,7 +36,7 @@ pub fn dev_clear(fragment: &IncomingFragment) {
     );
 }
 
-pub fn sequence_print(state: &State) {
+pub fn sequence_print(state: &State, code: u16, value: i32) {
     let result = state
         .sequence()
         .iter()
@@ -48,6 +51,10 @@ pub fn sequence_print(state: &State) {
             " {}",
             current_time.duration_since(first_time).unwrap().as_millis()
         );
+    }
+
+    if value == 0 {
+        print!(" ->{}", code_to_key_name(code));
     }
 
     println!();

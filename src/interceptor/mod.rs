@@ -8,7 +8,7 @@ use std::{
 };
 
 use crate::{
-    devices::{self, input::EventKindCheck},
+    devices::{self, input::EventKindCheck, output::event_from_code},
     utils,
 };
 
@@ -31,7 +31,7 @@ pub fn start() {
 
     // ----------------------------------------------------------------
 
-    // let mut virtual_device = devices::output::new().unwrap();
+    let mut virtual_device = devices::output::new().unwrap();
     let mut state = State::new();
 
     for signal in rx {
@@ -40,7 +40,13 @@ pub fn start() {
                 let fragment = IncomingFragment::new(&device_alias, code, value, timestamp);
                 state.receive(&fragment);
 
-                utils::dev_print::sequence_print(&state);
+                if value == 0 {
+                    let event_down = event_from_code(code, 1);
+                    let event_up = event_from_code(code, 0);
+                    virtual_device.emit(&[event_down, event_up]).unwrap();
+                }
+
+                // utils::dev_print::sequence_print(&state, code, value);
                 utils::dev_print::dev_clear(&fragment);
             }
         }
