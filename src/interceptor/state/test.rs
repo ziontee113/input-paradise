@@ -5,7 +5,7 @@ use crate::{
         incoming_fragment::{IncomingFragment, KeyState},
         state::State,
     },
-    rulekey,
+    ki, rulekey,
     utils::for_testing::mipoch,
 };
 
@@ -156,18 +156,18 @@ fn can_return_fragments_as_vector_of_key_identifiers() {
     let mut state = State::new();
 
     receive_new_fragment(&mut state, "L1", 32, 1, mipoch(0));
-    assert_eq!(state.sequence_identifiers(), rulekey!(L1 32));
+    assert_eq!(state.sequence_identifiers(), rulekey!(L1 D));
 
     receive_new_fragment(&mut state, "L1", 32, 0, mipoch(25));
     assert_eq!(state.sequence_identifiers(), rulekey!());
 
     receive_new_fragment(&mut state, "L1", 33, 1, mipoch(100));
-    assert_eq!(state.sequence_identifiers(), rulekey!(L1 33));
+    assert_eq!(state.sequence_identifiers(), rulekey!(L1 F));
     receive_new_fragment(&mut state, "L1", 32, 1, mipoch(150));
-    assert_eq!(state.sequence_identifiers(), rulekey!(L1 33, L1 32));
+    assert_eq!(state.sequence_identifiers(), rulekey!(L1 F, L1 D));
 
     receive_new_fragment(&mut state, "L1", 32, 0, mipoch(200));
-    assert_eq!(state.sequence_identifiers(), rulekey!(L1 33));
+    assert_eq!(state.sequence_identifiers(), rulekey!(L1 F));
     receive_new_fragment(&mut state, "L1", 33, 0, mipoch(250));
     assert_eq!(state.sequence_identifiers(), rulekey!());
 }
@@ -179,12 +179,12 @@ fn state_can_save_latest_up_down_value_and_key() {
     receive_new_fragment(&mut state, "L1", 32, 1, mipoch(0));
     assert_eq!(state.latest_value(), KeyState::Down);
     assert_eq!(i32::from(state.latest_value()), 1);
-    assert!(state.latest_key.as_ref().unwrap().is("L1", 32));
+    assert!(*state.latest_key.as_ref().unwrap() == ki!(L1 D));
 
     receive_new_fragment(&mut state, "L1", 32, 0, mipoch(25));
     assert_eq!(state.latest_value(), KeyState::Up);
     assert_eq!(i32::from(state.latest_value()), 0);
-    assert!(state.latest_key.as_ref().unwrap().is("L1", 32));
+    assert!(*state.latest_key.as_ref().unwrap() == ki!(L1 D));
 }
 
 #[test]
@@ -193,7 +193,7 @@ fn can_get_state_modifier_single_key_case() {
 
     receive_new_fragment(&mut state, "L1", 58, 1, mipoch(0));
     assert_eq!(state.modifier_identifiers().len(), 1);
-    assert!(state.modifier_identifiers().get(0).unwrap().is("L1", 58));
+    assert!(*state.modifier_identifiers().get(0).unwrap() == ki!(L1 CAPSLOCK));
 
     receive_new_fragment(&mut state, "L1", 58, 0, mipoch(0));
     assert_eq!(state.modifier_identifiers().len(), 0);
@@ -205,15 +205,15 @@ fn can_get_state_modifiers_combo_case() {
 
     receive_new_fragment(&mut state, "L1", 58, 1, mipoch(100));
     assert_eq!(state.modifier_identifiers().len(), 1);
-    assert!(state.modifier_identifiers().get(0).unwrap().is("L1", 58));
+    assert!(*state.modifier_identifiers().get(0).unwrap() == ki!(L1 CAPSLOCK));
 
     receive_new_fragment(&mut state, "R1", 36, 1, mipoch(150));
     assert_eq!(state.modifier_identifiers().len(), 1);
-    assert!(state.modifier_identifiers().get(0).unwrap().is("L1", 58));
+    assert!(*state.modifier_identifiers().get(0).unwrap() == ki!(L1 CAPSLOCK));
 
     receive_new_fragment(&mut state, "R1", 36, 0, mipoch(200));
     assert_eq!(state.modifier_identifiers().len(), 1);
-    assert!(state.modifier_identifiers().get(0).unwrap().is("L1", 58));
+    assert!(*state.modifier_identifiers().get(0).unwrap() == ki!(L1 CAPSLOCK));
 
     receive_new_fragment(&mut state, "L1", 58, 0, mipoch(250));
     assert_eq!(state.modifier_identifiers().len(), 0);

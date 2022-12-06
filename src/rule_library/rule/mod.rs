@@ -5,7 +5,7 @@ mod test;
 
 #[macro_export]
 macro_rules! rule {
-    ($($a:ident $b:expr), * => $output:expr) => {
+    ($($a:ident $b:ident), * => $output:expr) => {
         $crate::rule_library::rule::Rule::new( vec![ $( $crate::ki!($a $b) ),* ], $output )
     };
 }
@@ -13,7 +13,7 @@ macro_rules! rule {
 #[macro_export]
 /// Creates a vector of `KeyIdentifiers` from arguments
 macro_rules! rulekey {
-    ($($a:ident $b:expr), *) => {
+    ($($a:ident $b:ident), *) => {
         vec![ $( $crate::ki!($a $b) ),* ]
     };
 }

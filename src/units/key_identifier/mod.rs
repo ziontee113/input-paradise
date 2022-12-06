@@ -1,12 +1,12 @@
-use crate::utils::code_to_key_name::code_to_key_name;
+use crate::utils::{code_to_key_name::code_to_key_name, for_testing::key_code_from_str};
 
 #[cfg(test)]
 mod test;
 
 #[macro_export]
 macro_rules! ki {
-    ($a:ident $b:expr) => {
-        $crate::units::key_identifier::KeyIdentifier::new(stringify!($a), $b)
+    ($a:ident $b:ident) => {
+        $crate::units::key_identifier::KeyIdentifier::from_str(stringify!($a), stringify!($b))
     };
 }
 
@@ -24,16 +24,19 @@ impl KeyIdentifier {
         }
     }
 
+    pub fn from_str(device_alias: &str, key_name: &str) -> Self {
+        Self {
+            device_alias: device_alias.to_uppercase(),
+            code: key_code_from_str(key_name).unwrap(),
+        }
+    }
+
     pub fn device_alias(&self) -> &str {
         self.device_alias.as_ref()
     }
 
     pub fn code(&self) -> u16 {
         self.code
-    }
-
-    pub fn is(&self, device_alias: &str, code: u16) -> bool {
-        self.device_alias == device_alias && self.code == code
     }
 }
 
