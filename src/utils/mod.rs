@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub mod dev_print_utils;
+pub mod dev_print;
 pub mod for_testing;
 
 // for development purposes only

@@ -9,7 +9,7 @@ use std::{
 
 use crate::{
     devices::{self, input::EventKindCheck},
-    utils::{self, dev_print_utils::dev_clear},
+    utils::{self, dev_print::dev_clear},
 };
 
 use self::{incoming_fragment::IncomingFragment, state::State};
