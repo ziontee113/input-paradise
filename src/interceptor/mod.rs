@@ -7,8 +7,10 @@ use std::{
     time::SystemTime,
 };
 
+use evdev::AutoRepeat;
+
 use crate::{
-    devices::{self, input::EventKindCheck, output::event_from_code},
+    devices::{self, input::EventKindCheck},
     utils,
 };
 
@@ -49,6 +51,8 @@ pub fn start() {
                 //     virtual_device.emit(&[event_down, event_up]).unwrap();
                 // }
 
+                utils::dev_print::sequence_hold_time_print(&state, value, timestamp);
+
                 utils::dev_print::sequence_print(&state, code, value);
                 utils::dev_print::dev_clear(&fragment);
             }
@@ -69,6 +73,12 @@ fn intercept(rx: Sender<TransmitSignal>, device_alias: &str, device_path: &str) 
             );
         }
     }
+
+    let auto_repeat_settings = AutoRepeat {
+        delay: 1,
+        period: 1,
+    };
+    d.update_auto_repeat(&auto_repeat_settings).unwrap();
 
     thread::spawn(move || loop {
         match d.fetch_events() {
