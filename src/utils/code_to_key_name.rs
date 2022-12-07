@@ -1,4 +1,4 @@
-const KEY_ARRAY: &[&str; 244] = &[
+const KEY_ARRAY: &[&str; 245] = &[
     "KEY_RESERVED",
     "KEY_ESC",
     "KEY_1",
@@ -83,6 +83,7 @@ const KEY_ARRAY: &[&str; 244] = &[
     "KEY_KP3",
     "KEY_KP0",
     "KEY_KPDOT",
+    "______BLANK_KEY",
     "KEY_ZENKAKUHANKAKU",
     "KEY_102ND",
     "KEY_F11",
