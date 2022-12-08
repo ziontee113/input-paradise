@@ -12,7 +12,7 @@ it usually ends with `/input0`.
 - Goto `src/utils/mod.rs` and modify the HashMap in
 `mock_device_alias()` function with your keyboard path.
 
-Danger incoming! Before proceed:
+🟥 Danger incoming! Read before proceed:
 - `interceptor::start()` will completely disable your keyboard,
 you'd need to press `Tab` in order to quit the program.
 The function responsible for quitting the program is
