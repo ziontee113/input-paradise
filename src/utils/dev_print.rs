@@ -34,7 +34,7 @@ pub fn dev_clear(fragment: &IncomingFragment) {
 
     assert!(
         fragment.key().code() != 15,
-        "program terminated by pressing <BS>"
+        "program terminated by pressing <Tab>"
     );
 }
 

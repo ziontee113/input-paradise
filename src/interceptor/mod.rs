@@ -10,7 +10,7 @@ use std::{
 use evdev::AutoRepeat;
 
 use crate::{
-    devices::{self, input::EventKindCheck, output::event_from_code},
+    devices::{self, input::EventKindCheck},
     utils,
 };
 
@@ -33,7 +33,7 @@ pub fn start() {
 
     // ----------------------------------------------------------------
 
-    let mut virtual_device = devices::output::new().unwrap();
+    // let mut virtual_device = devices::output::new().unwrap();
     let mut state = State::new();
     let mut count = 0;
 
