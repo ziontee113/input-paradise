@@ -73,12 +73,15 @@ pub fn sequence_up_time_print(state: &State, value: i32) {
     }
 }
 
-pub fn sequence_hold_time_print(state: &State, value: i32, timestamp: SystemTime) {
+pub fn sequence_hold_time_print(state: &State, value: i32, timestamp: SystemTime, count: &mut u16) {
+    *count += 1;
+
     if !state.sequence().is_empty() && value == 2 {
         let first_time = state.sequence().first().unwrap().timestamp();
         print!(
-            ")-) {}",
-            timestamp.duration_since(first_time).unwrap().as_millis()
+            ")-) {} , count = {}",
+            timestamp.duration_since(first_time).unwrap().as_millis(),
+            count
         );
     }
 }
